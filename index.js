@@ -28,11 +28,11 @@ function mapVueFiles(cu, module, stats = {}) {
         try {
             // 尝试使用@vue/compiler-sfc解析.vue文件
             const { descriptor } = parse(source);
-            templateContent = descriptor.template.content;
+            templateContent = descriptor && descriptor.template && descriptor.template.content;
         } catch (error) {
             // 如果解析失败，使用vue-template-compiler解析.vue文件
             const { template } = vuecompiler.parseComponent(source);
-            templateContent = template.content;
+            templateContent = template && template.content;
         }
         // 使用正则表达式查找所有的UI组件
         let match;

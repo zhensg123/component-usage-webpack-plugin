@@ -60,7 +60,7 @@ module.exports = {
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | regex | 正则表达式，用于匹配需要统计的组件 | RegExp | /<(el-[a-z-]+)/g |
-| fileTypes | 要统计的文件类型，可数组 | String(vue/all) | vue |
+| fileTypes | 要统计的文件类型 | String(vue/all) | vue |
 
 ## 注意
 
