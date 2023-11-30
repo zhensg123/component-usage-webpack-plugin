@@ -2,7 +2,7 @@ const path = require('path')
 const { defineConfig } = require('@vue/cli-service')
 
 // const CompressionWebpackPlugin = require('compression-webpack-plugin')
-const StatisticsWebpackPlugin = require('../index');
+const StatisticsWebpackPlugin = require('../../index');
 
 const useAnalyzer = process.env.use_analyzer
 const {
