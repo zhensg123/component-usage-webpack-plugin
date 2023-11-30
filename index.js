@@ -7,7 +7,7 @@ const express = require('express')
 // const ejs = require('ejs')
 const vuecompiler = require('vue-template-compiler')
 const { parse } = require('@vue/compiler-sfc');
-const opn = require('opn');
+const open = require('open');
 
 function mapJsFiles(cu, module, stats = {}) {
     if (/\.js$/.test(module.resource)) {
@@ -43,7 +43,7 @@ function mapVueFiles(cu, module, stats = {}) {
     }
 
 }
-class componentUsageWebpackPlugin {
+class StatisticsWebpackPlugin {
     constructor(options) {
         const defaultOptions = {
             regex: /<(el-[a-z-]+)/g,
@@ -54,7 +54,7 @@ class componentUsageWebpackPlugin {
 
     apply(compiler) {
         const stats = {}
-
+        console.log('\n正在分析文件...\n')
         compiler.hooks.compilation.tap('componentUsageWebpackPlugin', (compilation) => {
             compilation.hooks.normalModuleLoader.tap('componentUsageWebpackPlugin', (loaderContext, module) => {
                 const { fileTypes } = this.options
@@ -103,10 +103,10 @@ class componentUsageWebpackPlugin {
             })
             server.on('listening', () => {
                 console.log(`Server is running at http://localhost:${port}`)
-                opn(`http://localhost:${port}`)
+                open(`http://localhost:${port}`)
             })
         })
     }
 }
 
-module.exports = componentUsageWebpackPlugin
+module.exports = StatisticsWebpackPlugin
