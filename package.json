@@ -20,5 +20,11 @@
   "bugs": {
     "url": "https://github.com/zhensg123/component-usage-webpack-plugin/issues"
   },
-  "homepage": "https://github.com/zhensg123/component-usage-webpack-plugin#readme"
+  "homepage": "https://github.com/zhensg123/component-usage-webpack-plugin#readme",
+  "dependencies": {
+    "@vue/compiler-sfc": "^3.3.9",
+    "express": "^4.18.2",
+    "opn": "^6.0.0",
+    "vue-template-compiler": "^2.6.11"
+  }
 }
