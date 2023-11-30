@@ -20,7 +20,7 @@ module.exports = {
 }
 ```
 
-### 统计其他UI组件，统计ant-designhtml组件
+### 统计其他UI组件，统计ant-design组件
 
 ```js
 const ComponentUsageWebpackPlugin = require('component-usage-webpack-plugin');
