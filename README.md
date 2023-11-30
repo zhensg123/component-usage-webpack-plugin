@@ -1,6 +1,8 @@
 # component-usage-webpack-plugin
 statistic component usage
+
 目前仅支持.vue和.js文件统计
+
 支持vue2和vue3
 
 ## npm install
@@ -58,9 +60,9 @@ module.exports = {
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | regex | 正则表达式，用于匹配需要统计的组件 | RegExp | /<(el-[a-z-]+)/g |
+| files | 要统计的文件类型，可数组 | String | Array | /\.vue$/ |
 
 ## 注意
 
     1. 组件使用统计只在开发环境下生效,且统计启动时项目不会正常启动
-    2. 组件使用统计只统计.vue内的组件，无法统计动态创建的组件
 
