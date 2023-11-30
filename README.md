@@ -1,5 +1,5 @@
-# component-usage-webpack-plugin
-statistic component usage
+# statistics-webpack-plugin
+statistic project
 
 目前仅支持.vue和.js文件统计
 
@@ -7,7 +7,7 @@ statistic component usage
 
 ## npm install
 ```
-npm install component-usage-webpack-plugin --save-dev
+npm install statistics-webpack-plugin --save-dev
 ```
 
 ## Usage
@@ -15,11 +15,11 @@ npm install component-usage-webpack-plugin --save-dev
 ### 默认统计element-ui组件使用情况
 
 ```js
-const ComponentUsageWebpackPlugin = require('component-usage-webpack-plugin');
+const StatisticsWebpackPlugin = require('statistics-webpack-plugin');
 
 module.exports = {
   plugins: [
-    new ComponentUsageWebpackPlugin()
+    new StatisticsWebpackPlugin()
   ]
 }
 ```
@@ -27,11 +27,11 @@ module.exports = {
 ### 统计其他UI组件，统计ant-design组件
 
 ```js
-const ComponentUsageWebpackPlugin = require('component-usage-webpack-plugin');
+const StatisticsWebpackPlugin = require('statistics-webpack-plugin');
 
 module.exports = {
   plugins: [
-    new ComponentUsageWebpackPlugin({
+    new StatisticsWebpackPlugin({
       regex: /<(ant-[a-z\-]+)/g, // Ant Design
     })
   ]
@@ -41,14 +41,14 @@ module.exports = {
 ### 可同时统计多个UI组件
 
 ```js
-const ComponentUsageWebpackPlugin = require('component-usage-webpack-plugin');
+const StatisticsWebpackPlugin = require('statistics-webpack-plugin');
 
 module.exports = {
   plugins: [
-    new ComponentUsageWebpackPlugin({
+    new StatisticsWebpackPlugin({
       regex: /<(ant-[a-z\-]+)/g, // Ant Design
     }),
-    new ComponentUsageWebpackPlugin({
+    new StatisticsWebpackPlugin({
       regex: /<(van-[a-z\-]+)/g, // Vant UI
     })
   ]

@@ -1,26 +1,25 @@
 {
-  "name": "component-usage-webpack-plugin",
+  "name": "statistics-webpack-plugin",
   "version": "1.0.5",
-  "description": "statistic component usage",
+  "description": "statistics project",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhensg123/component-usage-webpack-plugin.git"
+    "url": "git+https://github.com/zhensg123/statistics-webpack-plugin.git"
   },
   "keywords": [
     "statistic",
-    "component",
-    "usage"
+    "project"
   ],
   "author": "zhensg123",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/zhensg123/component-usage-webpack-plugin/issues"
+    "url": "https://github.com/zhensg123/statistics-webpack-plugin/issues"
   },
-  "homepage": "https://github.com/zhensg123/component-usage-webpack-plugin#readme",
+  "homepage": "https://github.com/zhensg123/statistics-webpack-plugin#readme",
   "dependencies": {
     "@vue/compiler-sfc": "^3.3.9",
     "express": "^4.18.2",
