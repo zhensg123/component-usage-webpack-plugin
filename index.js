@@ -1,65 +1,29 @@
-// componentUsageWebpackPlugin.js
-const fs = require('fs')
 const path = require('path')
 const http = require('http')
 
 const express = require('express')
-// const ejs = require('ejs')
-const vuecompiler = require('vue-template-compiler')
-const { parse } = require('@vue/compiler-sfc');
 const open = require('open');
+const { statisticJsComponentUsage, statisticVueComponentUsage } = require('./src/statisticComponentUsage');
+const { statisticJsFileComponentUsage, statisticVueFileComponentUsage } = require('./src/statisticFileComponentUsage');
+const statisticFileLineCount = require('./src/statisticFileLineCount');
+const statisticFileName = require('./src/statisticFileName');
 
-function mapJsFiles(cu, module, stats = {}) {
+function mapJsFiles(statwp, module, statistics = {}) {
     if (/\.js$/.test(module.resource)) {
-        const source = fs.readFileSync(module.userRequest, 'utf-8');
-        // 使用正则表达式查找所有的UI组件
-        let match;
-        while ((match = cu.options.regex.exec(source)) !== null) {
-            const relativePath = path.relative(process.cwd(), module.userRequest);
-            if (!stats[relativePath]) {
-                stats[relativePath] = {};
-            }
-            const componentName = match[1];
-            // stats[componentName] = (stats[componentName] || 0) + 1;
-
-            stats[relativePath][componentName] = (stats[relativePath][componentName] || 0) + 1;
-
-        }
+        statisticJsComponentUsage(statwp, module, statistics)
+        statisticJsFileComponentUsage(statwp, module, statistics)
+        statisticFileLineCount(module, statistics)
+        statisticFileName(module, statistics)
     }
 }
 
-function mapVueFiles(cu, module, stats = {}) {
+function mapVueFiles(statwp, module, statistics = {}) {
     if (/\.vue$/.test(module.resource)) {
-        const source = fs.readFileSync(module.userRequest, 'utf-8');
-        let templateContent;
-        try {
-            // 尝试使用@vue/compiler-sfc解析.vue文件
-            const { descriptor } = parse(source);
-            templateContent = descriptor && descriptor.template && descriptor.template.content;
-        } catch (error) {
-            // 如果解析失败，使用vue-template-compiler解析.vue文件
-            const { template } = vuecompiler.parseComponent(source);
-            templateContent = template && template.content;
-        }
-        // 使用正则表达式查找所有的UI组件
-        const relativePath = path.relative(process.cwd(), module.userRequest);
-        let match;
-        while ((match = cu.options.regex.exec(templateContent)) !== null) {
-            if (!stats[relativePath]) {
-                stats[relativePath] = {};
-            }
-            const componentName = match[1];
-
-            stats[relativePath][componentName] = (stats[relativePath][componentName] || 0) + 1;
-            // const componentName = match[1];
-            // stats[componentName] = (stats[componentName] || 0) + 1;
-        }
-        // 计算文件的行数
-        lineCounts[relativePath] = source.split('\n').length;
-        // 记录文件名
-        fileNames.push(path.basename(module.userRequest));
+        statisticVueComponentUsage(statwp, module, statistics)
+        statisticVueFileComponentUsage(statwp, module, statistics)
+        statisticFileLineCount(module, statistics)
+        statisticFileName(module, statistics)
     }
-
 }
 class StatisticsWebpackPlugin {
     constructor(options) {
@@ -71,9 +35,9 @@ class StatisticsWebpackPlugin {
     }
 
     apply(compiler) {
-        const stats = {};
-        let fileNames = [];
-        let lineCounts = {};
+        const statistics = {};
+        // let fileNames = [];
+        // let lineCounts = {};
         console.log('\n正在分析文件...\n')
         compiler.hooks.compilation.tap('componentUsageWebpackPlugin', (compilation) => {
             compilation.hooks.normalModuleLoader.tap('componentUsageWebpackPlugin', (loaderContext, module) => {
@@ -81,12 +45,12 @@ class StatisticsWebpackPlugin {
                 switch (fileTypes) {
                     // 处理.js文件
                     case 'vue':
-                        mapVueFiles(this, module, stats);
+                        mapVueFiles(this, module, statistics);
                         break;
-                    // 处理all文件
+                    // 处理vue和js文件
                     case 'all':
-                        mapVueFiles(this, module, stats);
-                        mapJsFiles(this, module, stats);
+                        mapVueFiles(this, module, statistics);
+                        mapJsFiles(this, module, statistics);
                         break;
                     // 处理.jsx文件
                 }
@@ -95,21 +59,25 @@ class StatisticsWebpackPlugin {
 
         compiler.hooks.done.tap('componentUsageWebpackPlugin', () => {
             console.log('\n分析完成，正在生成统计结果...\n')
-            console.log(stats, 'stass')
-            // 数据降序排列
-            const statsArray = Object.entries(stats).sort((a, b) => b[1] - a[1]);
             // 将统计结果写入到一个JSON文件中
-            const statsFile = path.resolve(__dirname, 'stats.json')
-            fs.writeFileSync(statsFile, JSON.stringify(statsArray))
+            // const statsFile = path.resolve(__dirname, 'stats.json')
+            // fs.writeFileSync(statsFile, JSON.stringify(statsArray))
+            console.log(statistics, '222222222')
 
+             // 数据降序排列
+            statistics.componentUsage = Object.entries(statistics.componentUsage).sort((a, b) => b[1] - a[1])
+            statistics.fileLineCount = Object.entries(statistics.fileLineCount).sort((a, b) => b[1] - a[1])
+
+            console.log(statistics, '222222222')
             // 启动一个服务器来显示统计结果
             const app = express()
             app.set('view engine', 'ejs')
             app.set('views', path.resolve(__dirname, 'views')) // 设置视图目录
             app.use(express.static(path.resolve(__dirname, 'public'))) // 托管静态文件
+
             app.get('/', (req, res) => {
-                res.render('stats', { stats: statsArray })
-            })
+                res.render('index', { ...statistics });
+            });
 
             let port = 30000
             const server = http.createServer(app)

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>UI Usage Stats</title>
+  <script src="/echarts.js"></script>
+</head>
+
+<body>
+  <div id="component-usage" style="width: 100%;height:500px;"></div>
+  <div id="file-component-usage" style="width: 100%;height:500px;"></div>
+  <div id="file-line-count" style="width: 100%;height:500px;"></div>
+  <div id="file-name" style="width: 100%;height:500px;"></div>
+
+
+  <script>
+    var componentUsage = echarts.init(document.getElementById('component-usage'));
+    var componentUsageOption = {
+      title: {
+        text: 'UI Component Usage Stats',
+        left: 'center'
+      },
+      tooltip: {
+
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        data: <%- JSON.stringify(componentUsage.map(([name, count]) => name)) %> ,
+        axisLabel: {
+          interval: 0,
+          rotate: 40
+        }
+      },
+      yAxis: {},
+      yAxis: {},
+      series: [{
+        name: 'UI Component Usage',
+        type: 'bar',
+        data: <%- JSON.stringify(componentUsage.map(([name, count]) => count)) %> ,
+        label: {
+          show: true,
+          position: 'top'
+        },
+        markPoint: {
+          data: [
+            { type: 'max', name: 'Max' },
+            { type: 'min', name: 'Min' }
+          ]
+        }
+      }]
+    };
+    componentUsage.setOption(componentUsageOption);
+  </script>
+ <script>
+   
+
+    var fileComponentUsageDom = echarts.init(document.getElementById('file-component-usage'));
+    var fileComponentUsage = <%- JSON.stringify(fileComponentUsage) %>;
+    var files = Object.keys(fileComponentUsage);
+    var components = Array.from(new Set([].concat(...files.map(file => Object.keys(fileComponentUsage[file])))));
+    var series = components.map(component => ({
+      name: component,
+      type: 'bar',
+      stack: 'total',
+      data: files.map(file => fileComponentUsage[file][component] || 0)
+    }));
+    var fileComponentUsageOption = {
+      title: {
+        text: 'File Component Usage Stats',
+        left: 'center'
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      tooltip: {},
+      // legend: {
+      //   data: components
+      // },
+      xAxis: {
+        data: files,
+        axisLabel: {
+          interval: 0,
+          rotate: 45
+        }
+      },
+      yAxis: {},
+      series: series
+    };
+    fileComponentUsageDom.setOption(fileComponentUsageOption);
+  </script>
+  </script> 
+  <script>
+    var fileLineCountDom = echarts.init(document.getElementById('file-line-count'));
+    var fileLineCountOption = {
+      title: {
+        text: 'File LineCount Stats',
+        left: 'center'
+      },
+      tooltip: {
+
+      },
+      xAxis: {
+        data: <%- JSON.stringify(fileLineCount.map(([name, count]) => name)) %> ,
+        axisLabel: {
+          interval: 0,
+          rotate: 40
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      yAxis: {},
+      series: [{
+        name: 'File LineCount',
+        type: 'bar',
+        data: <%- JSON.stringify(fileLineCount.map(([name, count]) => count)) %> ,
+        label: {
+          show: true,
+          position: 'top'
+        },
+        markPoint: {
+          data: [
+            { type: 'max', name: 'Max' },
+            { type: 'min', name: 'Min' }
+          ]
+        }
+      }]
+    };
+    fileLineCountDom.setOption(fileLineCountOption);
+  </script>
+  <!-- <script>
+    var fileName = echarts.init(document.getElementById('file-name'));
+    var fileNameOption = {
+      title: {
+        text: 'UI Component Usage Stats',
+        left: 'center'
+      },
+      tooltip: {
+
+      },
+       grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        data: <% - JSON.stringify(fileName.map(([name, count]) => name)) %> ,
+        axisLabel: {
+          interval: 0,
+          rotate: 40
+        }
+      },
+      yAxis: {},
+      yAxis: {},
+      series: [{
+        name: 'Usage',
+        type: 'bar',
+        data: <% - JSON.stringify(fileName.map(([name, count]) => count)) %> ,
+        label: {
+          show: true,
+          position: 'top'
+        },
+        markPoint: {
+          data: [
+            { type: 'max', name: 'Max' },
+            { type: 'min', name: 'Min' }
+          ]
+        }
+      }]
+    };
+    fileName.setOption(fileNameOption);
+  </script>  -->
+  <style>
+    div + div {
+      margin-top:30px;
+    }
+  </style>
+</body>
+
+</html>
