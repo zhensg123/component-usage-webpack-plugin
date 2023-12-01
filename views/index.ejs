@@ -13,10 +13,18 @@
   <div id="file-name" style="width: 100%;height:500px;">
     <h3>File Name Stats</h3>
     <div class="name-box">
-      <% fileName.forEach(function(name) { %>
-        <p>
+      <% fileName.forEach(function({name, size, mtime}) { %>
+       <div class="table">
+         <p>
           <%= name %>
-        </p>
+         </p>
+         <p>
+          <%= size %>
+         </p>
+         <p>
+          <%= mtime %>
+         </p>
+       </div>
       <% }); %>
     </div>
   </div>
@@ -196,18 +204,22 @@
     .name-box {
       overflow: auto;
       display: flex;
-      gap: 10px;
+      
       flex-wrap: wrap;
       padding: 0 30px;
       padding-bottom: 100px;
     }
-    .name-box p{
+    .name-box .table {
+      display: flex;
+      gap: 10px;
+    }
+    .name-box .table p{
       margin: 0;
       border:1px solid #909399;
       color: #909399;
       border-radius: 4px;
       padding: 2px 4px;
-      
+      flex: 1;
     }
   </style>
 </body>

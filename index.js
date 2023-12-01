@@ -9,21 +9,18 @@ const statisticFileLineCount = require('./src/statisticFileLineCount');
 const statisticFileName = require('./src/statisticFileName');
 
 function mapJsFiles(statwp, module, statistics = {}) {
-    if (/\.js$/.test(module.resource)) {
-        statisticJsComponentUsage(statwp, module, statistics)
-        statisticJsFileComponentUsage(statwp, module, statistics)
-        statisticFileLineCount(module, statistics)
-        statisticFileName(module, statistics)
-    }
+    statisticJsComponentUsage(statwp, module, statistics)
+    statisticJsFileComponentUsage(statwp, module, statistics)
+    statisticFileLineCount(module, statistics)
+    statisticFileName(module, statistics)
 }
 
 function mapVueFiles(statwp, module, statistics = {}) {
-    if (/\.vue$/.test(module.resource)) {
-        statisticVueComponentUsage(statwp, module, statistics)
-        statisticVueFileComponentUsage(statwp, module, statistics)
-        statisticFileLineCount(module, statistics)
-        statisticFileName(module, statistics)
-    }
+    statisticVueComponentUsage(statwp, module, statistics)
+    statisticVueFileComponentUsage(statwp, module, statistics)
+    statisticFileLineCount(module, statistics)
+    statisticFileName(module, statistics)
+
 }
 class StatisticsWebpackPlugin {
     constructor(options) {
@@ -43,12 +40,18 @@ class StatisticsWebpackPlugin {
                 switch (fileTypes) {
                     // 处理.vue文件
                     case 'vue':
-                        mapVueFiles(this, module, statistics);
+                        if (/\.vue$/.test(module.resource)) {
+                            mapVueFiles(this, module, statistics);
+                        }
                         break;
                     // 处理vue和js文件
                     case 'all':
-                        mapVueFiles(this, module, statistics);
-                        mapJsFiles(this, module, statistics);
+                        if (/\.js$/.test(module.resource)) {
+                            mapJsFiles(this, module, statistics);
+                        }
+                        if (/\.vue$/.test(module.resource)) {
+                            mapVueFiles(this, module, statistics);
+                        }
                         break;
                     // 处理.jsx文件 
                 }
@@ -61,8 +64,8 @@ class StatisticsWebpackPlugin {
             // const statsFile = path.resolve(__dirname, 'stats.json')
             // fs.writeFileSync(statsFile, JSON.stringify(statsArray))
 
-             // 数据降序排列
-             const {componentUsage, fileLineCount, fileName} = statistics
+            // 数据降序排列
+            const { componentUsage, fileLineCount, fileName } = statistics
             statistics.componentUsage = Object.entries(componentUsage).sort((a, b) => b[1] - a[1])
             statistics.fileLineCount = Object.entries(fileLineCount).sort((a, b) => b[1] - a[1])
             statistics.fileName = fileName.sort()
