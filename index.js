@@ -62,8 +62,10 @@ class StatisticsWebpackPlugin {
             // fs.writeFileSync(statsFile, JSON.stringify(statsArray))
 
              // 数据降序排列
-            statistics.componentUsage = Object.entries(statistics.componentUsage).sort((a, b) => b[1] - a[1])
-            statistics.fileLineCount = Object.entries(statistics.fileLineCount).sort((a, b) => b[1] - a[1])
+             const {componentUsage, fileLineCount, fileName} = statistics
+            statistics.componentUsage = Object.entries(componentUsage).sort((a, b) => b[1] - a[1])
+            statistics.fileLineCount = Object.entries(fileLineCount).sort((a, b) => b[1] - a[1])
+            statistics.fileName = fileName.sort()
 
             // 启动一个服务器来显示统计结果
             const app = express()
