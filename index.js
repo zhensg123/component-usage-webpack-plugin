@@ -36,8 +36,6 @@ class StatisticsWebpackPlugin {
 
     apply(compiler) {
         const statistics = {};
-        // let fileNames = [];
-        // let lineCounts = {};
         console.log('\n正在分析文件...\n')
         compiler.hooks.compilation.tap('componentUsageWebpackPlugin', (compilation) => {
             compilation.hooks.normalModuleLoader.tap('componentUsageWebpackPlugin', (loaderContext, module) => {
@@ -62,13 +60,11 @@ class StatisticsWebpackPlugin {
             // 将统计结果写入到一个JSON文件中
             // const statsFile = path.resolve(__dirname, 'stats.json')
             // fs.writeFileSync(statsFile, JSON.stringify(statsArray))
-            console.log(statistics, '222222222')
 
              // 数据降序排列
             statistics.componentUsage = Object.entries(statistics.componentUsage).sort((a, b) => b[1] - a[1])
             statistics.fileLineCount = Object.entries(statistics.fileLineCount).sort((a, b) => b[1] - a[1])
 
-            console.log(statistics, '222222222')
             // 启动一个服务器来显示统计结果
             const app = express()
             app.set('view engine', 'ejs')
