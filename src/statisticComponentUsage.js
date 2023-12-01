@@ -23,13 +23,14 @@ exports.statisticVueComponentUsage = function (statwp, module, statistics) {
     const source = fs.readFileSync(module.userRequest, 'utf-8');
     let templateContent;
     try {
-        // 尝试使用@vue/compiler-sfc解析.vue文件
-        const { descriptor } = parse(source);
-        templateContent = descriptor && descriptor.template && descriptor.template.content;
-    } catch (error) {
+
         // 如果解析失败，使用vue-template-compiler解析.vue文件
         const { template } = vuecompiler.parseComponent(source);
         templateContent = template && template.content;
+    } catch (error) {
+        // 尝试使用@vue/compiler-sfc解析.vue文件
+        const { descriptor } = parse(source);
+        templateContent = descriptor && descriptor.template && descriptor.template.content;
     }
     if (!statistics[skey]) {
         statistics[skey] = {};
