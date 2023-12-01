@@ -15,8 +15,15 @@ function mapJsFiles(cu, module, stats = {}) {
         // 使用正则表达式查找所有的UI组件
         let match;
         while ((match = cu.options.regex.exec(source)) !== null) {
+            const relativePath = path.relative(process.cwd(), module.userRequest);
+            if (!stats[relativePath]) {
+                stats[relativePath] = {};
+            }
             const componentName = match[1];
-            stats[componentName] = (stats[componentName] || 0) + 1;
+            // stats[componentName] = (stats[componentName] || 0) + 1;
+
+            stats[relativePath][componentName] = (stats[relativePath][componentName] || 0) + 1;
+
         }
     }
 }
@@ -35,11 +42,22 @@ function mapVueFiles(cu, module, stats = {}) {
             templateContent = template && template.content;
         }
         // 使用正则表达式查找所有的UI组件
+        const relativePath = path.relative(process.cwd(), module.userRequest);
         let match;
         while ((match = cu.options.regex.exec(templateContent)) !== null) {
+            if (!stats[relativePath]) {
+                stats[relativePath] = {};
+            }
             const componentName = match[1];
-            stats[componentName] = (stats[componentName] || 0) + 1;
+
+            stats[relativePath][componentName] = (stats[relativePath][componentName] || 0) + 1;
+            // const componentName = match[1];
+            // stats[componentName] = (stats[componentName] || 0) + 1;
         }
+        // 计算文件的行数
+        lineCounts[relativePath] = source.split('\n').length;
+        // 记录文件名
+        fileNames.push(path.basename(module.userRequest));
     }
 
 }
@@ -53,7 +71,9 @@ class StatisticsWebpackPlugin {
     }
 
     apply(compiler) {
-        const stats = {}
+        const stats = {};
+        let fileNames = [];
+        let lineCounts = {};
         console.log('\n正在分析文件...\n')
         compiler.hooks.compilation.tap('componentUsageWebpackPlugin', (compilation) => {
             compilation.hooks.normalModuleLoader.tap('componentUsageWebpackPlugin', (loaderContext, module) => {
@@ -74,6 +94,9 @@ class StatisticsWebpackPlugin {
         })
 
         compiler.hooks.done.tap('componentUsageWebpackPlugin', () => {
+            console.log('\n分析完成，正在生成统计结果...\n')
+            console.log(stats, 'stass')
+            // 数据降序排列
             const statsArray = Object.entries(stats).sort((a, b) => b[1] - a[1]);
             // 将统计结果写入到一个JSON文件中
             const statsFile = path.resolve(__dirname, 'stats.json')
