@@ -65,6 +65,7 @@ module.exports = {
 ## 注意
 
     1. 组件使用统计只在开发环境下生效,且统计启动时项目可能不会正常启动
-    2. 建议在package.json中添加"statistic": 通过添加变量的方式单独启用
+    2. 建议在package.json中添加"statistic": "cross-env use_statistic=true npm run serve",单独使用
+
     
 
