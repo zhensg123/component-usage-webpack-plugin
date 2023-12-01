@@ -41,7 +41,7 @@ class StatisticsWebpackPlugin {
             compilation.hooks.normalModuleLoader.tap('componentUsageWebpackPlugin', (loaderContext, module) => {
                 const { fileTypes } = this.options
                 switch (fileTypes) {
-                    // 处理.js文件
+                    // 处理.vue文件
                     case 'vue':
                         mapVueFiles(this, module, statistics);
                         break;
@@ -50,7 +50,7 @@ class StatisticsWebpackPlugin {
                         mapVueFiles(this, module, statistics);
                         mapJsFiles(this, module, statistics);
                         break;
-                    // 处理.jsx文件
+                    // 处理.jsx文件 
                 }
             })
         })
