@@ -2,7 +2,6 @@
 const fs = require('fs')
 const path = require('path')
 
-const vuecompiler = require('vue-template-compiler')
 const { parse } = require('@vue/compiler-sfc');
 const skey = 'fileComponentUsage'
 

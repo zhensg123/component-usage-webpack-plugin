@@ -15,7 +15,7 @@ module.exports = function statisticJsFileName(module, statistics) {
 
     statistics[skey].push({
         name: fileName,
-        size: `${stats.size/1024}KB`,
+        size: `${(stats.size/1024).toFixed(2)}KB`,
         mtime: transferTime(stats.mtime)
     });
 }

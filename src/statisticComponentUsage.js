@@ -1,6 +1,5 @@
 const fs = require('fs')
 
-const vuecompiler = require('vue-template-compiler')
 const { parse } = require('@vue/compiler-sfc');
 const skey = 'componentUsage'
 exports.statisticJsComponentUsage = function (statwp, module, statistics) {

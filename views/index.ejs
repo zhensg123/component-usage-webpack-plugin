@@ -13,6 +13,11 @@
   <div id="file-name" style="width: 100%;height:500px;">
     <h3>File Name Stats</h3>
     <div class="name-box">
+      <div class="th">
+        <p>文件名称</p>
+        <p>文件大小</p>
+        <p>最后修改时间</p>
+      </div>
       <% fileName.forEach(function({name, size, mtime}) { %>
        <div class="table">
          <p>
@@ -203,23 +208,26 @@
     }
     .name-box {
       overflow: auto;
-      display: flex;
       
       flex-wrap: wrap;
       padding: 0 30px;
       padding-bottom: 100px;
     }
-    .name-box .table {
+    .name-box .table, .name-box .th {
       display: flex;
       gap: 10px;
     }
-    .name-box .table p{
+    .name-box .table p, .name-box .th p{
       margin: 0;
       border:1px solid #909399;
       color: #909399;
       border-radius: 4px;
       padding: 2px 4px;
       flex: 1;
+    }
+    .name-box .th p{
+      border:2px solid #909399;
+      font-weight: bold;
     }
   </style>
 </body>

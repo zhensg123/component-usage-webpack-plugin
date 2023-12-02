@@ -1,12 +1,17 @@
+
+
+function buffStr(data){
+  return String(data).length === 0 ? `0${data}` : data
+}
 exports.transferTime = function (Dtime) {
     let date = new Date(Dtime);
     let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
-
+    let month = buffStr(date.getMonth() + 1);
+    let day = buffStr(date.getDate());
+    let hours = buffStr(date.getHours());
+    let minutes = buffStr(date.getMinutes());
+    let seconds = buffStr(date.getSeconds());
+   
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
 }
