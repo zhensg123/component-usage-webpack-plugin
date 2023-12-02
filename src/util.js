@@ -1,7 +1,7 @@
 
 
 function buffStr(data){
-  return String(data).length === 0 ? `0${data}` : data
+  return String(data).length === 1 ? `0${data}` : data
 }
 exports.transferTime = function (Dtime) {
     let date = new Date(Dtime);

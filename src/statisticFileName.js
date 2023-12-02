@@ -18,4 +18,14 @@ module.exports = function statisticJsFileName(module, statistics) {
         size: `${(stats.size/1024).toFixed(2)}KB`,
         mtime: transferTime(stats.mtime)
     });
+
+    statistics[skey].sort((a, b)=>{
+        if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+    })
 }
