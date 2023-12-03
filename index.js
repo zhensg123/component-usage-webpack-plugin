@@ -2,6 +2,7 @@
 const { mapJsFiles, mapVueFiles } = require('./src/mapFiles')
 const server = require('./src/server')
 const { objArrSort } = require('./src/util')
+const webpack = require('webpack');
 const NormalModule = webpack.NormalModule;
 
 const initStatsMetric = function () {
@@ -52,14 +53,14 @@ class StatisticsWebpackPlugin {
     apply(compiler) {
         console.log('\n正在分析文件...\n')
         compiler.hooks.compilation.tap('StatisticsWebpackPlugin', (compilation) => {
-            if (NormalModule.getCompilationHooks) {
+            if (NormalModule.getCompilationHooks && compilation instanceof webpack.Compilation) {
                 // Webpack 5
-                NormalModule.getCompilationHooks(compilation).loader.tap('MyPlugin', (loaderContext, module) => {
+                NormalModule.getCompilationHooks(compilation).loader.tap('StatisticsWebpackPlugin', (loaderContext, module) => {
                     this.switchCaseFile(module)
                 });
             } else {
                 // Webpack 4
-                compilation.hooks.normalModuleLoader.tap('MyPlugin', (loaderContext, module) => {
+                compilation.hooks.normalModuleLoader.tap('StatisticsWebpackPlugin', (loaderContext, module) => {
                     this.switchCaseFile(module)
                 });
             }
@@ -69,7 +70,6 @@ class StatisticsWebpackPlugin {
             // 将统计结果写入到一个JSON文件中
             // const statsFile = path.resolve(__dirname, 'stats.json')
             // fs.writeFileSync(statsFile, JSON.stringify(statsArray))
-            console.log(stats, 'statsvvv')
             if (this.id === 0) {
                 console.log('\n分析完成，正在生成统计结果...\n')
                 this.id++
