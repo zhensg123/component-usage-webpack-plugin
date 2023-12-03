@@ -10,6 +10,9 @@ module.exports = {
   },
   mode: 'production',
   target: 'node',
+  externals: {
+    'webpack': 'commonjs webpack', // 插件依赖vue-template-compiler，所以将其设置为外部依赖
+  },
   module: {
     rules: [
       {
@@ -19,6 +22,14 @@ module.exports = {
           loader: 'babel-loader', // 使用babel-loader来转译JavaScript代码
         },
       },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
     ],
   },
+  resolve: {
+    extensions: ['.js', '.ts','.tsx'],
+  }
 };

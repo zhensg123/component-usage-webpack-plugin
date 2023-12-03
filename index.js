@@ -53,7 +53,7 @@ class StatisticsWebpackPlugin {
     apply(compiler) {
         console.log('\n正在分析文件...\n')
         compiler.hooks.compilation.tap('StatisticsWebpackPlugin', (compilation) => {
-            if (NormalModule.getCompilationHooks && compilation instanceof webpack.Compilation) {
+            if (NormalModule && NormalModule.getCompilationHooks && compilation instanceof webpack.Compilation) {
                 // Webpack 5
                 NormalModule.getCompilationHooks(compilation).loader.tap('StatisticsWebpackPlugin', (loaderContext, module) => {
                     this.switchCaseFile(module)
