@@ -15,3 +15,7 @@ exports.transferTime = function (Dtime) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
 }
+
+exports.objArrSort = function (objArr) {
+    return Object.entries(objArr).sort((a, b) => b[1] - a[1])
+}

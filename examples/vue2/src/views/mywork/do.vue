@@ -2,13 +2,18 @@
   <div>
     <h1>执行下去</h1>
     <el-button>待你我</el-button>
-    <el-button>待你我</el-button>
-    <el-button>待你我</el-button>
-    <el-button>待你我</el-button>
-    <el-button>待你我</el-button>
-    <el-button>待你我</el-button>
+ 
     <el-tag>待你我</el-tag>
     <el-tag>待你我</el-tag>
-
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
+    <el-tag>待你我</el-tag>
   </div>
 </template>

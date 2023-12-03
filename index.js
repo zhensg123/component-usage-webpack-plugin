@@ -1,26 +1,14 @@
-const path = require('path')
-const http = require('http')
 
-const express = require('express')
-const open = require('open');
-const { statisticJsComponentUsage, statisticVueComponentUsage } = require('./src/statisticComponentUsage');
-const { statisticJsFileComponentUsage, statisticVueFileComponentUsage } = require('./src/statisticFileComponentUsage');
-const statisticFileLineCount = require('./src/statisticFileLineCount');
-const statisticFileName = require('./src/statisticFileName');
-
-function mapJsFiles(statwp, module, statistics = {}) {
-    statisticJsComponentUsage(statwp, module, statistics)
-    statisticJsFileComponentUsage(statwp, module, statistics)
-    statisticFileLineCount(module, statistics)
-    statisticFileName(module, statistics)
-}
-
-function mapVueFiles(statwp, module, statistics = {}) {
-    statisticVueComponentUsage(statwp, module, statistics)
-    statisticVueFileComponentUsage(statwp, module, statistics)
-    statisticFileLineCount(module, statistics)
-    statisticFileName(module, statistics)
-
+const { mapJsFiles, mapVueFiles } = require('./src/mapFiles')
+const server = require('./src/server')
+const { objArrSort } = require('./src/util')
+const initStatsMetric = function () {
+    return {
+        componentUsage: {}, // 统计UI 组件使用情况
+        fileComponentUsage: {},// 统计UI 组件使用情况
+        fileLineCount: {},// 统计UI 组件使用情况
+        fileName: [] //统计UI 组件使用情况
+    }
 }
 class StatisticsWebpackPlugin {
     constructor(options) {
@@ -29,74 +17,56 @@ class StatisticsWebpackPlugin {
             fileTypes: 'vue'
         }
         this.options = Object.assign({}, defaultOptions, options)
+        this.stats = initStatsMetric()
+        this.id = 0
     }
 
     apply(compiler) {
-        const statistics = {};
         console.log('\n正在分析文件...\n')
         compiler.hooks.compilation.tap('componentUsageWebpackPlugin', (compilation) => {
             compilation.hooks.normalModuleLoader.tap('componentUsageWebpackPlugin', (loaderContext, module) => {
-                const { fileTypes } = this.options
-                switch (fileTypes) {
-                    // 处理.vue文件
-                    case 'vue':
-                        if (/\.vue$/.test(module.resource)) {
-                            mapVueFiles(this, module, statistics);
-                        }
-                        break;
-                    // 处理vue和js文件
-                    case 'all':
-                        if (/\.js$/.test(module.resource)) {
-                            mapJsFiles(this, module, statistics);
-                        }
-                        if (/\.vue$/.test(module.resource)) {
-                            mapVueFiles(this, module, statistics);
-                        }
-                        break;
-                    // 处理.jsx文件 
+
+                if (this.id === 0) {
+                    const { fileTypes } = this.options
+                    switch (fileTypes) {
+                        // 处理.vue文件
+                        case 'vue':
+                            if (/\.vue$/.test(module.resource)) {
+                                mapVueFiles(this, module);
+                            }
+                            break;
+                        // 处理vue和js文件
+                        case 'all':
+                            if (/\.js$/.test(module.resource)) {
+                                mapJsFiles(this, module);
+                            }
+                            if (/\.vue$/.test(module.resource)) {
+                                mapVueFiles(this, module);
+                            }
+                            break;
+                        // 处理.jsx文件 
+                    }
                 }
             })
         })
 
         compiler.hooks.done.tap('componentUsageWebpackPlugin', () => {
-            console.log('\n分析完成，正在生成统计结果...\n')
             // 将统计结果写入到一个JSON文件中
             // const statsFile = path.resolve(__dirname, 'stats.json')
             // fs.writeFileSync(statsFile, JSON.stringify(statsArray))
 
-            // 数据降序排列
-            const { componentUsage, fileLineCount, fileName } = statistics
-            statistics.componentUsage = Object.entries(componentUsage).sort((a, b) => b[1] - a[1])
-            statistics.fileLineCount = Object.entries(fileLineCount).sort((a, b) => b[1] - a[1])
-            statistics.fileName = fileName.sort()
-
-            // 启动一个服务器来显示统计结果
-            const app = express()
-            app.set('view engine', 'ejs')
-            app.set('views', path.resolve(__dirname, 'views')) // 设置视图目录
-            app.use(express.static(path.resolve(__dirname, 'public'))) // 托管静态文件
-
-            app.get('/', (req, res) => {
-                res.render('index', { ...statistics });
-            });
-
-            let port = 30000
-            const server = http.createServer(app)
-            server.listen(port)
-            server.on('error', (error) => {
-                if (error.code === 'EADDRINUSE') {
-                    console.log(`Port ${port} is in use, trying another one...`)
-                    port++
-                    server.close()
-                    server.listen(port)
-                } else {
-                    throw error
+            if (this.id === 0) {
+                console.log('\n分析完成，正在生成统计结果...\n')
+                this.id++
+                const { componentUsage, fileLineCount, fileName } = this.stats
+                this.stats = {
+                    ...this.stats,
+                    componentUsage: objArrSort(componentUsage),
+                    fileLineCount: objArrSort(fileLineCount),
+                    fileName: fileName.sort((a, b) => a.name.localeCompare(b.name))
                 }
-            })
-            server.on('listening', () => {
-                console.log(`Server is running at http://localhost:${port}`)
-                open(`http://localhost:${port}`)
-            })
+                server(this)
+            }
         })
     }
 }

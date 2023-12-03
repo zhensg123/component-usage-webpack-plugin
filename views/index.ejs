@@ -15,13 +15,17 @@
     <div class="name-box">
       <div class="th">
         <p>文件名称</p>
+        <p>文件路径</p>
         <p>文件大小</p>
         <p>最后修改时间</p>
       </div>
-      <% fileName.forEach(function({name, size, mtime}) { %>
+      <% fileName.forEach(function({name, path, size, mtime}) { %>
        <div class="table">
          <p>
           <%= name %>
+         </p>
+         <p>
+          <%= path %>
          </p>
          <p>
           <%= size %>
