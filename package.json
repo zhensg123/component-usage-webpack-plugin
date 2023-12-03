@@ -1,8 +1,8 @@
 {
   "name": "statistics-webpack-plugin",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "statistics project",
-  "main": "./dist/index.js",
+  "main": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
