@@ -5,9 +5,9 @@ const { objArrSort } = require('./src/util')
 const initStatsMetric = function () {
     return {
         componentUsage: {}, // 统计UI 组件使用情况
-        fileComponentUsage: {},// 统计UI 组件使用情况
-        fileLineCount: {},// 统计UI 组件使用情况
-        fileName: [] //统计UI 组件使用情况
+        fileComponentUsage: {},// 统计每个文件组件使用情况
+        fileLineCount: {},// 统计文件行数
+        fileName: [] //统计文件名
     }
 }
 class StatisticsWebpackPlugin {
@@ -28,19 +28,20 @@ class StatisticsWebpackPlugin {
 
                 if (this.id === 0) {
                     const { fileTypes } = this.options
+                    const excludeNodeModules = module.resource ? module.resource.indexOf('node_modules') === -1 : false
                     switch (fileTypes) {
                         // 处理.vue文件
                         case 'vue':
-                            if (/\.vue$/.test(module.resource)) {
+                            if (/\.vue$/.test(module.resource) && excludeNodeModules) {
                                 mapVueFiles(this, module);
                             }
                             break;
                         // 处理vue和js文件
                         case 'all':
-                            if (/\.js$/.test(module.resource)) {
+                            if (/\.js$/.test(module.resource) && excludeNodeModules) {
                                 mapJsFiles(this, module);
                             }
-                            if (/\.vue$/.test(module.resource)) {
+                            if (/\.vue$/.test(module.resource) && excludeNodeModules) {
                                 mapVueFiles(this, module);
                             }
                             break;
