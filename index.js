@@ -14,6 +14,24 @@ const initStatsMetric = function () {
         fileName: [] //统计文件名
     }
 }
+
+function getDirectoryTree(startPath) {
+    let result = { name: path.basename(startPath), children: [] };
+    let files = fs.readdirSync(startPath);
+
+    files.forEach(file => {
+      let filePath = path.join(startPath, file);
+      let stats = fs.statSync(filePath);
+
+      if (stats.isDirectory()) {
+        result.children.push(this.getDirectoryTree(filePath));
+      } else {
+        result.children.push({ name: file });
+      }
+    });
+
+    return result;
+  }
 class StatisticsWebpackPlugin {
     constructor(options) {
         const defaultOptions = {
