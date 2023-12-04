@@ -9,8 +9,14 @@ module.exports = function ({stats}) {
     const app = express()
     app.set('view engine', 'ejs')
     app.set('views', path.resolve(__dirname, '../views')) // 设置视图目录
-    app.use(express.static(path.resolve(__dirname, '../public'))) // 托管静态文件
-
+    // app.use(express.static(path.resolve(__dirname, '../public'))) // 托管静态文件
+    app.use(express.static(path.resolve(__dirname, '../public'), {
+        setHeaders: function(res, path, stat) {
+          if (path.endsWith('.css')) {
+            res.set('Content-Type', 'text/css');
+          }
+        }
+      }));
     app.get('/', (req, res) => {
         res.render('index', { ...stats });
     });

@@ -3,42 +3,54 @@
 
 <head>
   <title>UI Usage Stats</title>
-  <link rel="stylesheet" href="/elment-ui.css">
+  <link rel="stylesheet" href="/element-ui.css">
   <script src="/vue.js"></script>
   <script src="/elment-ui.js"></script>
   <script src="/echarts.js"></script>
-
+  <link rel="stylesheet" href="/element-ui.css">
+  
 </head>
 
 <body>
-  <div id="component-usage" style="width: 100%;height:500px;"></div>
-  <div id="file-component-usage" style="width: 100%;height:500px;"></div>
-  <div id="file-line-count" style="width: 100%;height:500px;"></div>
-  <div id="file-name" style="width: 100%;height:500px;">
-
+  <div id="component-usage" class="ecahrts" style="width: 100%;height:500px;"></div>
+  <div id="file-component-usage" class="ecahrts" style="width: 100%;height:500px;"></div>
+  <!-- <div id="file-line-count" class="ecahrts" style="width: 100%;height:500px;"></div> -->
+  <div id="file-info" style="width: 100%;height:500px;">
+    <h3>FileInfo Statis<h3>
     <el-table
     :data="tableData"
     style="width: 100%">
     <el-table-column
       prop="name"
       label="文件名称"
+      sortable
+      min-width="150"
       >
     </el-table-column>
     <el-table-column
       prop="path"
       label="文件路径"
-      width="180">
+      sortable
+      show-overflow-tooltip
+      min-width="200"
+      >
     </el-table-column>
     <el-table-column
     prop="lineCount"
+    sortable
+    min-width="100"
     label="文件内容行数">
   </el-table-column>
     <el-table-column
       prop="size"
+      sortable
+      min-width="100"
       label="文件大小">
     </el-table-column>
     <el-table-column
     prop="mtime"
+    sortable
+    min-width="100"
     label="最后修改时间">
   </el-table-column>
   </el-table>
@@ -46,12 +58,16 @@
   <!-- <%- JSON.stringify(fileName.map((name) => ({name: name, value: 1}))) %> -->
 
   <script>
-    new Vue({
-      el: '#file-name',
+    window.onload=function(){
+      new Vue({
+      el: '#file-info',
       data(){
-        return tableDate: <%- JSON.stringify(fileInfo) %>
+        return {
+          tableData: <%- JSON.stringify(fileInfo) %>
+        }
       }
     })
+    }
   </script>
   <script>
     var componentUsage = echarts.init(document.getElementById('component-usage'));
@@ -217,7 +233,7 @@
     fileNameDom.setOption(fileNameOption);
   </script> -->
   <style>
-    div + div {
+    .ecahrts + .ecahrts {
       margin-top:30px;
     }
     h3 {
