@@ -2,9 +2,10 @@ const { statisticJsComponentUsage, statisticVueComponentUsage } = require('./sta
 const { statisticJsFileComponentUsage, statisticVueFileComponentUsage } = require('./statistic/statisticFileComponentUsage');
 const statisticFileLineCount = require('./statistic/statisticFileLineCount');
 const statisticFileName = require('./statistic/statisticFileName');
+const statisticFileInfo = require('./statistic/statisticFileInfo');
 
 function collectFileInfo(statswp, module){
-    const {fileLineCount, fileName} = statswp.stats
+    const {fileLineCount, fileName, fileInfo} = statswp.stats
 
     statswp.stats.fileLineCount = {
         ...fileLineCount,
@@ -13,6 +14,11 @@ function collectFileInfo(statswp, module){
     statswp.stats.fileName = [
         ...fileName,
         ...statisticFileName(module)
+    ]
+
+    statswp.stats.fileInfo = [
+        ...fileInfo,
+        ...statisticFileInfo(module)
     ]
 }
 exports.mapJsFiles =  function (statswp, module) {

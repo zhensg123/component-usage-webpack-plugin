@@ -10,6 +10,7 @@ const initStatsMetric = function () {
         componentUsage: {}, // 统计UI 组件使用情况
         fileComponentUsage: {},// 统计每个文件组件使用情况
         fileLineCount: {},// 统计文件行数
+        fileInfo: [], // 统计文件信息
         fileName: [] //统计文件名
     }
 }
