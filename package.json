@@ -1,6 +1,6 @@
 {
   "name": "statistics-webpack-plugin",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "description": "statistics project",
   "main": "./index.js",
   "scripts": {

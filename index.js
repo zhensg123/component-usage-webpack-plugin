@@ -97,7 +97,6 @@ class StatisticsWebpackPlugin {
             // 将统计结果写入到一个JSON文件中
             // const statsFile = path.resolve(__dirname, 'stats.json')
             // fs.writeFileSync(statsFile, JSON.stringify(statsArray))
-            console.log(path.join(compiler.context, 'src'), 'path.join(compiler.context')
 
             this.id === 0 && waitSrcTree(path.join(compiler.context, 'src')).then(srcTree => {
                 // this.stats.fileInfo = res.children
@@ -110,7 +109,6 @@ class StatisticsWebpackPlugin {
                     fileInfo: fileInfo.sort((a, b) => a.name.localeCompare(b.name)),
                     srcTree: srcTree
                 }
-                console.log(srcTree, 'srcTreesrcTreesrcTree')
                 server(this)
             })
 
