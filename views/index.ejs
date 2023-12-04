@@ -12,10 +12,8 @@
 </head>
 
 <body>
-  <div id="component-usage" class="ecahrts" style="width: 100%;height:500px;"></div>
-  <div id="file-component-usage" class="ecahrts" style="width: 100%;height:500px;"></div>
-  <!-- <div id="file-line-count" class="ecahrts" style="width: 100%;height:500px;"></div> -->
-  <div id="file-info" style="width: 100%;height:500px;">
+  <div id="src-tree" class="ecahrts" style="width: 100%;height:1000px;margin-top:30px;"></div>
+  <div id="file-info" style="width: 100%;height:500px;margin-top:30px;">
     <h3>FileInfo Statis<h3>
     <el-table
     :data="tableData"
@@ -55,6 +53,12 @@
   </el-table-column>
   </el-table>
   </div>
+  <div id="file-component-usage" class="ecahrts" style="width: 100%;height:500px;"></div>
+
+  <div id="component-usage" class="ecahrts" style="width: 100%;height:500px;"></div>
+  <!-- <div id="file-line-count" class="ecahrts" style="width: 100%;height:500px;"></div> -->
+
+
   <!-- <%- JSON.stringify(fileName.map((name) => ({name: name, value: 1}))) %> -->
 
   <script>
@@ -154,46 +158,45 @@
   </script>
   </script> 
   <script>
-    var fileLineCountDom = echarts.init(document.getElementById('file-line-count'));
-    var fileLineCountOption = {
-      title: {
-        text: 'File LineCount Stats',
+   let myChart = echarts.init(document.getElementById('src-tree'));
+
+let option = {
+  title: {
+        text: 'Src Path Tree',
         left: 'center'
       },
-      tooltip: {
-
+  series: [
+    {
+      type: 'tree',
+      orient: 'TB',
+      layout: 'orthogonal',
+      data: [<%- JSON.stringify(srcTree) %>],  // srcTree是你的树形数据
+      top: '5%',
+      left: '2%',
+      bottom: '12%',
+      right: '2%',
+      symbolSize: 7,
+      label: {
+        position: 'left',
+        verticalAlign: 'middle',
+        align: 'right',
+        fontSize: 12
       },
-      xAxis: {
-        data: <%- JSON.stringify(fileLineCount.map(([name, count]) => name)) %> ,
-        axisLabel: {
-          interval: 0,
-          rotate: 40
-        }
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      yAxis: {},
-      series: [{
-        name: 'File LineCount',
-        type: 'bar',
-        data: <%- JSON.stringify(fileLineCount.map(([name, count]) => count)) %> ,
+      leaves: {
         label: {
-          show: true,
-          position: 'top'
-        },
-        markPoint: {
-          data: [
-            { type: 'max', name: 'Max' },
-            { type: 'min', name: 'Min' }
-          ]
+          position: 'right',
+          rotate: 90,
+          distance: 10
         }
-      }]
-    };
-    fileLineCountDom.setOption(fileLineCountOption);
+      },
+      expandAndCollapse: true,
+      animationDuration: 550,
+      animationDurationUpdate: 750
+    }
+  ]
+};
+
+myChart.setOption(option);
   </script>
   
    <!-- <script>
@@ -233,7 +236,10 @@
     fileNameDom.setOption(fileNameOption);
   </script> -->
   <style>
-    .ecahrts + .ecahrts {
+    body {
+      padding-bottom: 100px;
+    }
+    .ecahrts {
       margin-top:30px;
     }
     h3 {

@@ -3,6 +3,9 @@ const { mapJsFiles, mapVueFiles } = require('./src/mapFiles')
 const server = require('./src/server')
 const { objArrSort } = require('./src/util')
 const webpack = require('webpack');
+const path = require('path');
+const fs = require('fs');
+
 const NormalModule = webpack.NormalModule;
 
 const initStatsMetric = function () {
@@ -16,22 +19,27 @@ const initStatsMetric = function () {
 }
 
 function getDirectoryTree(startPath) {
-    let result = { name: path.basename(startPath), children: [] };
-    let files = fs.readdirSync(startPath);
+        let result = { name: path.basename(startPath), children: [] };
+        let files = fs.readdirSync(startPath);
 
-    files.forEach(file => {
-      let filePath = path.join(startPath, file);
-      let stats = fs.statSync(filePath);
+        files.forEach(file => {
+            let filePath = path.join(startPath, file);
+            let stats = fs.statSync(filePath);
 
-      if (stats.isDirectory()) {
-        result.children.push(this.getDirectoryTree(filePath));
-      } else {
-        result.children.push({ name: file });
-      }
-    });
-
-    return result;
-  }
+            if (stats.isDirectory()) {
+                result.children.push(getDirectoryTree(filePath));
+            } else {
+                result.children.push({ name: file });
+            }
+        });
+        return result
+}
+function waitSrcTree(srcpath){
+    return new Promise((resolve) => {
+        const srcTree = getDirectoryTree(srcpath)
+        resolve(srcTree)
+    })
+}
 class StatisticsWebpackPlugin {
     constructor(options) {
         const defaultOptions = {
@@ -46,8 +54,8 @@ class StatisticsWebpackPlugin {
         if (this.id === 0) {
             const { fileTypes } = this.options
             const resource = module.resource
-            if(resource.indexOf('node_modules') !== -1){
-              return false
+            if (resource.indexOf('node_modules') !== -1) {
+                return false
             }
             switch (fileTypes) {
                 // 处理.vue文件
@@ -89,18 +97,23 @@ class StatisticsWebpackPlugin {
             // 将统计结果写入到一个JSON文件中
             // const statsFile = path.resolve(__dirname, 'stats.json')
             // fs.writeFileSync(statsFile, JSON.stringify(statsArray))
-            if (this.id === 0) {
+            console.log(path.join(compiler.context, 'src'), 'path.join(compiler.context')
+
+            this.id === 0 && waitSrcTree(path.join(compiler.context, 'src')).then(srcTree => {
+                // this.stats.fileInfo = res.children
                 console.log('\n分析完成，正在生成统计结果...\n')
                 this.id++
-                const { componentUsage, fileLineCount, fileName } = this.stats
+                const { componentUsage, fileInfo } = this.stats
                 this.stats = {
                     ...this.stats,
                     componentUsage: objArrSort(componentUsage),
-                    fileLineCount: objArrSort(fileLineCount),
-                    fileName: fileName.sort((a, b) => a.name.localeCompare(b.name))
+                    fileInfo: fileInfo.sort((a, b) => a.name.localeCompare(b.name)),
+                    srcTree: srcTree
                 }
+                console.log(srcTree, 'srcTreesrcTreesrcTree')
                 server(this)
-            }
+            })
+
         })
     }
 }
